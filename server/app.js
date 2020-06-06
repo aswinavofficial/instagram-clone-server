@@ -2,13 +2,11 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 require('./models/user')
+require('./models/post')
 const app = express()
 
 
 app.use(express.json())
-app.use(require('./routes/auth'))
-
-
 
 const port = 5000
 const { MONGOURL } = require('./keys')
@@ -29,19 +27,15 @@ mongoose.connection.on('error', () => {
     console.log('Mongodb connection error ')
 })
 
-const customMiddleWare = (req, res, next) => {
-    console.log("Middleware")
-    next()
-}
+app.use(require('./routes/auth'))
+app.use(require('./routes/post'))
 
 
-// app.get('/', (req, res) => {
-//     res.send("HelloWorld")
-// })
-
-app.get('/home', customMiddleWare, (req, res) => {
-    res.send("home")
+app.get('/', (req, res) => {
+    res.json({ message: "Instagram Clone" })
 })
+
+
 
 app.listen(port, () => {
     console.log("Server is running on", port)
