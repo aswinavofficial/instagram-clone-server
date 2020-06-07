@@ -11,8 +11,13 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    photo: {
+        type: String,
+        required: false
+    },
     postedBy: {
-        type: ObjectId
+        type: ObjectId,
+        ref: 'User'
     }
 }, { timestamps: true })
 

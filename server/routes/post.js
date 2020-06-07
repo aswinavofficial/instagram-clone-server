@@ -4,19 +4,45 @@ const mongoose = require('mongoose')
 const requireLogin = require('../middleware/requireLogin')
 const Post = mongoose.model("Post")
 
+router.get('/post', requireLogin, (req, res) => {
+    Post.find({ postedBy: req.user._id })
+        .populate("postedBy", "_id name")
+        .then(results => {
+
+            results.forEach(result => {
+                result.createdAt = undefined
+                result.updatedAt = undefined
+                result.__v = undefined
+            })
+            res.json({ results })
+        }).catch(error => {
+            console.log(error)
+            res.status(500).json({ error: "Internal Server error" })
+
+        })
+
+})
 
 router.get('/post/all', requireLogin, (req, res) => {
 
+    Post.find()
+        .populate("postedBy", "_id name")
+        .then(results => {
 
-    Post.find().then(result => {
-        res.json({ result })
-    }).catch(error => {
-        console.log(error)
-        res.status(500).json({ error: "Internal Server error" })
+            results.forEach(result => {
+                result.createdAt = undefined
+                result.updatedAt = undefined
+                result.__v = undefined
+            })
+            res.json({ results })
+        }).catch(error => {
+            console.log(error)
+            res.status(500).json({ error: "Internal Server error" })
 
-    })
+        })
 
 })
+
 
 router.post('/post', requireLogin, (req, res) => {
 
@@ -40,5 +66,8 @@ router.post('/post', requireLogin, (req, res) => {
     })
 
 })
+
+
+
 
 module.exports = router
