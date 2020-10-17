@@ -21,20 +21,23 @@ router.post('/signup', (req, res) => {
     }
 
     console.time('MONGO_SIGNUP');
-    User.findOne({ email: email }).then(
+    User.findOne({ email: email })
+    .lean()
+    .then(
         savedUser => {
             if (savedUser) {
                 return res.status(422).json({ error: "User having given email id already already " })
 
             }
 
-            bcrypt.hash(password, 15).
-                then(hashedPassword => {
+           // bcrypt.hash(password, 15).
+            //    then(hashedPassword => {
                     const user = new User(
-                        { name, email, password: hashedPassword }
+                        { name, email, password: password }
                     )
 
-                    user.save().then(user => {
+                    user.save()
+                    .then(user => {
                         console.timeEnd('MONGO_SIGNUP'); 
                         res.json({ message: "SUCCESS" })
                     }).catch(err => {
@@ -44,7 +47,7 @@ router.post('/signup', (req, res) => {
 
                     })
 
-                })
+               // })
 
         }
     ).catch(err => {
@@ -68,19 +71,26 @@ router.post('/signin', (req, res) => {
         return res.status(422).json({ error: "Please enter all required  fields" })
     }
 
+
+    console.time('MONGO_SIGNIN');
     User.findOne(
         { email: email }
-    ).then(savedUser => {
+    )
+    .lean()
+    .then(savedUser => {
         if (!savedUser) {
             console.log("User not valid")
             return res.status(422).json({ error: "Invalid username or password" })
         }
 
-        bcrypt.compare(password, savedUser.password).then(doMatch => {
-
-            if (doMatch) {
+        console.timeEnd('MONGO_SIGNIN');
+        console.time('MONGO_SIGNIN_BCRYPT');
+      //  bcrypt.compare(password, savedUser.password).then(doMatch => {
+            console.timeEnd('MONGO_SIGNIN_BCRYPT');
+            if (password === savedUser.password ) {
                 const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET)
 
+                
                 const { _id, name, email } = savedUser
                 res.json({
                     token, user: {
@@ -95,12 +105,12 @@ router.post('/signin', (req, res) => {
 
             }
 
-        }).catch(err => {
+        // }).catch(err => {
 
-            console.log(err)
-            res.status(500).json({ error: "Internal Server error" })
+        //     console.log(err)
+        //     res.status(500).json({ error: "Internal Server error" })
 
-        })
+        // })
 
 
     }).catch(err => {
