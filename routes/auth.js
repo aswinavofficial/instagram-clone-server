@@ -19,6 +19,8 @@ router.post('/signup', (req, res) => {
         return res.status(422).json({ error: "Please enter all required  fields" })
 
     }
+
+    console.time('MongoDB Call starts');
     User.findOne({ email: email }).then(
         savedUser => {
             if (savedUser) {
@@ -33,6 +35,7 @@ router.post('/signup', (req, res) => {
                     )
 
                     user.save().then(user => {
+                        console.timeEnd('MongoDB call end'); 
                         res.json({ message: "SUCCESS" })
                     }).catch(err => {
 
