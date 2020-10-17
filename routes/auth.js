@@ -20,7 +20,7 @@ router.post('/signup', (req, res) => {
 
     }
 
-    console.time('MongoDB Call starts');
+    console.time('MONGO_SIGNUP');
     User.findOne({ email: email }).then(
         savedUser => {
             if (savedUser) {
@@ -35,7 +35,7 @@ router.post('/signup', (req, res) => {
                     )
 
                     user.save().then(user => {
-                        console.timeEnd('MongoDB call end'); 
+                        console.timeEnd('MONGO_SIGNUP'); 
                         res.json({ message: "SUCCESS" })
                     }).catch(err => {
 
