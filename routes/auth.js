@@ -20,7 +20,7 @@ router.post('/signup', (req, res) => {
 
     }
 
-    console.time('MONGO_SIGNUP');
+    console.time('MONGO_EMAIL_CHECK');
     User.findOne({ email: email })
     .lean()
     .then(
@@ -39,15 +39,18 @@ router.post('/signup', (req, res) => {
             // 10 - 138 ms
             // 9  - 99 ms
             // 8  - 73 ms
+               console.timeEnd('MONGO_EMAIL_CHECK');
+               console.time('BCRYPT_HASHING');
            bcrypt.hash(password, 10).
                then(hashedPassword => {
                     const user = new User(
                         { name, email, password: password }
                     )
-
+                console.timeEnd('BCRYPT_HASHING');
+                console.time('MONGO_USER_SAVE');
                     user.save()
                     .then(user => {
-                        console.timeEnd('MONGO_SIGNUP'); 
+                        console.timeEnd('MONGO_USER_SAVE'); 
                         res.json({ message: "SUCCESS" })
                     }).catch(err => {
 
