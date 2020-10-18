@@ -50,6 +50,7 @@ router.get('/post/latest', requireLogin, (req, res) => {
         _id: postid ,
         title: "Post " + postid ,
         body: "Some more random text",
+        "photo" : "https://source.unsplash.com/random/400x400?sig="+postid
         postedBy: {
             _id: "5f8c1332114fdd56dd25e65c",
             name: "Aswin",
