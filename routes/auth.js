@@ -30,8 +30,17 @@ router.post('/signup', (req, res) => {
 
             }
 
-           // bcrypt.hash(password, 15).
-            //    then(hashedPassword => {
+            // Rounds  ->  Time
+            // 15 - 3039 ms
+            // 14 - 1476 ms
+            // 13 - 775 ms
+            // 12 - 416 ms
+            // 11 - 231 ms
+            // 10 - 138 ms
+            // 9  - 99 ms
+            // 8  - 73 ms
+           bcrypt.hash(password, 10).
+               then(hashedPassword => {
                     const user = new User(
                         { name, email, password: password }
                     )
@@ -47,7 +56,7 @@ router.post('/signup', (req, res) => {
 
                     })
 
-               // })
+               })
 
         }
     ).catch(err => {
@@ -85,7 +94,7 @@ router.post('/signin', (req, res) => {
 
         console.timeEnd('MONGO_SIGNIN');
         console.time('MONGO_SIGNIN_BCRYPT');
-      //  bcrypt.compare(password, savedUser.password).then(doMatch => {
+       bcrypt.compare(password, savedUser.password).then(doMatch => {
             console.timeEnd('MONGO_SIGNIN_BCRYPT');
             if (password === savedUser.password ) {
                 const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET)
@@ -105,12 +114,12 @@ router.post('/signin', (req, res) => {
 
             }
 
-        // }).catch(err => {
+        }).catch(err => {
 
-        //     console.log(err)
-        //     res.status(500).json({ error: "Internal Server error" })
+            console.log(err)
+            res.status(500).json({ error: "Internal Server error" })
 
-        // })
+        })
 
 
     }).catch(err => {
