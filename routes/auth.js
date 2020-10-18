@@ -44,7 +44,7 @@ router.post('/signup', (req, res) => {
            bcrypt.hash(password, 10).
                then(hashedPassword => {
                     const user = new User(
-                        { name, email, password: password }
+                        { name, email, password: hashedPassword }
                     )
                 console.timeEnd('BCRYPT_HASHING');
                 console.time('MONGO_USER_SAVE');
@@ -99,7 +99,7 @@ router.post('/signin', (req, res) => {
         console.time('MONGO_SIGNIN_BCRYPT');
        bcrypt.compare(password, savedUser.password).then(doMatch => {
             console.timeEnd('MONGO_SIGNIN_BCRYPT');
-            if (password === savedUser.password ) {
+            if (doMatch) {
                 const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET)
 
                 
