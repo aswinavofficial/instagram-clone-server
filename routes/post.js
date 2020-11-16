@@ -30,7 +30,7 @@ router.get('/post/all', requireLogin, (req, res) => {
         .then(posts => {
 
             posts.forEach(result => {
-                result.createdAt = undefined
+                // result.createdAt = undefined
                 result.updatedAt = undefined
                 result.__v = undefined
             })
@@ -44,6 +44,33 @@ router.get('/post/all', requireLogin, (req, res) => {
 })
 
 router.get('/post/latest', requireLogin, (req, res) => {
+
+    // https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js
+
+    console.log('createdOnBefore' + req.query.createdOnBefore)
+    Post.find({ createdAt: { $lt: req.query.createdOnBefore } } )
+        .populate("postedBy","_id name")
+        .limit( 3 )
+        .sort( '-createdAt' )
+        .then(posts => {
+
+            posts.forEach(result => {
+                // result.createdAt = undefined
+                result.updatedAt = undefined
+                result.__v = undefined
+            })
+            res.json({ posts })
+        }).catch(error => {
+            console.log(error)
+            res.status(500).json({ error: "Internal Server error" })
+
+        })
+
+
+})
+
+router.get('/post/latest/dummy', requireLogin, (req, res) => {
+
 
     const postid = Math.floor(Math.random() * 100)
     const post = {
