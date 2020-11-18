@@ -13,7 +13,8 @@ const postSchema = new mongoose.Schema({
     },
     photo: {
         type: String,
-        required: true
+        required: true,
+        default : 'https://res.cloudinary.com/dzfjtvyhe/image/upload/v1605724756/wiqmxswe04bvl6xj7su7.jpg'
     },
     postedBy: {
         type: ObjectId,
