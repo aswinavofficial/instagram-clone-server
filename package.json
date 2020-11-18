@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-  "test": "echo \"No test specified\""
-},
+    "test": "echo \"No test specified\""
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

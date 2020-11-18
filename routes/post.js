@@ -4,13 +4,14 @@ const mongoose = require('mongoose')
 const requireLogin = require('../middleware/requireLogin')
 const Post = mongoose.model("Post")
 
-router.get('/post', requireLogin, (req, res) => {
+router.get('/post/my', requireLogin, (req, res) => {
+
+    console.log("/post/my ")
     Post.find({ postedBy: req.user._id })
         .populate("postedBy", "_id name")
         .then(results => {
 
             results.forEach(result => {
-                result.createdAt = undefined
                 result.updatedAt = undefined
                 result.__v = undefined
             })
@@ -44,6 +45,32 @@ router.get('/post/all', requireLogin, (req, res) => {
 })
 
 router.get('/post/latest', requireLogin, (req, res) => {
+
+    // https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js
+
+    console.log('createdOnBefore' + req.query.createdOnBefore)
+    Post.find({ createdAt: { $lt: req.query.createdOnBefore } } )
+        .populate("postedBy","_id name")
+        .limit( 3 )
+        .sort( '-createdAt' )
+        .then(posts => {
+
+            posts.forEach(result => {
+                // result.createdAt = undefined
+                result.updatedAt = undefined
+                result.__v = undefined
+            })
+            res.json({ posts })
+        }).catch(error => {
+            console.log(error)
+            res.status(500).json({ error: "Internal Server error" })
+
+        })
+
+
+})
+
+router.get('/post/like', requireLogin, (req, res) => {
 
     // https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js
 

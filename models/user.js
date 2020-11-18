@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Schema.Types
+
 
 const userSchema = new mongoose.Schema(
     {
@@ -14,6 +16,21 @@ const userSchema = new mongoose.Schema(
 
             type: String,
             required: true
+
+        },
+        followers: [{
+            type : ObjectId,
+            ref : 'User'
+        }],
+        following: [{
+            type : ObjectId,
+            ref : 'User'
+        }],
+
+        accountType : {
+
+            type : String,
+            default : 'PRIVATE'
 
         }
 

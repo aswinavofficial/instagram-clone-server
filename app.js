@@ -36,6 +36,7 @@ mongoose.connection.on('error', () => {
 
 app.use(require('./routes/auth'))
 app.use(require('./routes/post'))
+app.use(require('./routes/user'))
 
 
 app.get('/', (req, res) => {
