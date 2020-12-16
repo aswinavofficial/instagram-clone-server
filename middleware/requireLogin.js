@@ -14,6 +14,8 @@ module.exports = (req, res, next) => {
             return res.status(401).json({ error: "you must be logged in" })
         }
         
+        console.log("Payload : ")
+        console.log(payload)
         const { _id,name } = payload
         User.findById(_id).then(userdata => {
 

@@ -36,9 +36,21 @@ const userSchema = new mongoose.Schema(
             type : String,
             default : 'PRIVATE'
 
+        },
+        location: {
+            type: {
+                type: String,
+                required: false,
+                default: "Point"
+            },
+            address: { type: String },
+            coordinates: [ Number ],
         }
 
     }
 )
+
+userSchema.index({"location": "2dsphere", email: 1});
+
 
 mongoose.model("User", userSchema)

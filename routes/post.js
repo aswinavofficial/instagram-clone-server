@@ -8,7 +8,7 @@ router.get('/post/my', requireLogin, (req, res) => {
 
     console.log("/post/my ")
     Post.find({ postedBy: req.user._id })
-        .populate("postedBy", "_id name")
+        .populate("postedBy", "_id name photo")
         .then(results => {
 
             results.forEach(result => {
@@ -27,7 +27,7 @@ router.get('/post/my', requireLogin, (req, res) => {
 router.get('/post/all', requireLogin, (req, res) => {
 
     Post.find()
-        .populate("postedBy","_id name")
+        .populate("postedBy","_id name photo")
         .then(posts => {
 
             posts.forEach(result => {
@@ -50,7 +50,7 @@ router.get('/post/latest', requireLogin, (req, res) => {
 
     console.log('createdOnBefore' + req.query.createdOnBefore)
     Post.find({ createdAt: { $lt: req.query.createdOnBefore } } )
-        .populate("postedBy","_id name")
+        .populate("postedBy","_id name photo")
         .limit( 3 )
         .sort( '-createdAt' )
         .then(posts => {
@@ -76,7 +76,7 @@ router.get('/post/like', requireLogin, (req, res) => {
 
     console.log('createdOnBefore' + req.query.createdOnBefore)
     Post.find({ createdAt: { $lt: req.query.createdOnBefore } } )
-        .populate("postedBy","_id name")
+        .populate("postedBy","_id name photo")
         .limit( 3 )
         .sort( '-createdAt' )
         .then(posts => {

@@ -4,6 +4,23 @@ const mongoose = require('mongoose')
 const requireLogin = require('../middleware/requireLogin')
 const User = mongoose.model("User")
 const Post = mongoose.model("Post")
+const dbOperations = require('../dao/db-operations')
+
+router.get('/user/nearestUsers',requireLogin, async (req, res) => {
+    /*
+        extract the latitude and longitude info from the request query parameters.
+        Then, fetch the nearest users using MongoDB's geospatial queries and return it back to the client.
+    */
+    const latitude = Number(req.query.lat);
+    const longitude = Number(req.query.lng);
+    /* MaxDistance in meters */
+    const maxDistance = 2000
+    const nearestUsers = await dbOperations.fetchNearestUsers([longitude, latitude], maxDistance);
+
+    res.json({
+        users: nearestUsers
+    });
+});
 
 router.get('/user/:username', requireLogin, (req, res) => {
 
@@ -16,6 +33,8 @@ router.get('/user/:username', requireLogin, (req, res) => {
         savedUser => {
 
             const user  = savedUser
+
+            if(savedUser !=null && savedUser != undefined) {
             user.password = undefined
             user.__v = undefined
 
@@ -38,6 +57,16 @@ router.get('/user/:username', requireLogin, (req, res) => {
 
         })
 
+            }
+
+        else {
+
+            console.log('user not found')
+            res.status(404).json({ error: "Invalid User" })
+
+        }  
+
+            
         })
         .catch(error => {
             console.log(error)
@@ -46,5 +75,8 @@ router.get('/user/:username', requireLogin, (req, res) => {
         })
 
 })
+
+
+
 
 module.exports = router

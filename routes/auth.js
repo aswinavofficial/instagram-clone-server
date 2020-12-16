@@ -43,8 +43,20 @@ router.post('/signup', (req, res) => {
                console.time('BCRYPT_HASHING');
            bcrypt.hash(password, 10).
                then(hashedPassword => {
+
+                    //Sample long,lat values
+                    const long = 76.3181582593144
+                    const lat = 10.03008657533085
+
+                    const location = {
+                        type : "Point",
+                        address : "Sample",
+                        coordinates : [long, lat]
+
+                    }
+
                     const user = new User(
-                        { name, email, password: hashedPassword }
+                        { name, email, password: hashedPassword, location }
                     )
                 console.timeEnd('BCRYPT_HASHING');
                 console.time('MONGO_USER_SAVE');
